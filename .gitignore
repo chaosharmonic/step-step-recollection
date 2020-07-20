@@ -1,0 +1,7 @@
+node_modules
+scripts
+.vscode
+
+.env
+yarn.lock
+scratchpad.js
