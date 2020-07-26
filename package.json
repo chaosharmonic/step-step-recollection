@@ -19,7 +19,6 @@
     "mongoose": "^5.9.22"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node src/server.js",
-    "dbOp": "babel-node src/scripts/dbOp.js"
+    "start": "nodemon --exec babel-node src/server.js"
   }
 }
