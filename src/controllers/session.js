@@ -1,4 +1,5 @@
 import Session from '../models/session'
+import Song from '../models/song'
 
 export const getSessionsByPlayer = (req, res, next) => {
   console.log('route: getSessionsByPlayer')
@@ -11,9 +12,18 @@ export const getAllSessions = async (req, res, next) => {
     // const query = { pageNo, pageSize }
     const { filters } = req.body
 
-    const sessions = await Session.find({ ...filters })
+    const response = await Session.find({ ...filters }).lean()
 
-    res.json(sessions)
+    for (const session of response) {
+      const { songs } = session
+
+      for (const song of songs) {
+        const id = song.song
+        const { title } = await Song.findOne({ _id: id })
+        song.title = title
+      }
+    }
+    res.json(response)
   } catch (err) {
     console.error(err)
   }
@@ -22,10 +32,16 @@ export const getAllSessions = async (req, res, next) => {
 export const getSessionById = async (req, res, next) => {
   try {
     const { id } = req.params
-    console.log(id)
-    const session = await Session.findOne({ _id: id })
+    const response = await Session.findOne({ _id: id }).lean()
 
-    const response = { ...session }
+    const { songs } = session
+
+    for (const song of songs) {
+      const id = song.song
+      const { title } = await Song.findOne({ _id: id })
+      song.title = title
+    }
+
     res.json(response)
   } catch (err) {
     console.error(err)
