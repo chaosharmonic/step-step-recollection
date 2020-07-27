@@ -12,7 +12,7 @@ const playerSchema = new Schema({
     meterType: String,
     scrollType: String,
     scrollSpeed: Number
-    // modifiers TODO: after test API
+    // modifiers TODO: sometime after this is playtest-ready
   },
   notes: [
     { type: ObjectId, ref: 'Note' }
