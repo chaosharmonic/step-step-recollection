@@ -1,4 +1,5 @@
 import Release from '../models/release'
+import Song from '../models/song'
 
 export const getAllReleases = async (req, res, next) => {
   try {
@@ -20,9 +21,10 @@ export const getReleaseById = async (req, res, next) => {
     const { id } = req.params
     const release = await Release.findOne({ _id: id })
 
-    // TODO: add songs to detailed response
+    const songs = await Song.find({ release: { _id: id } })
 
-    res.json(release)
+    const response = { release, songs }
+    res.json(response)
   } catch (err) {
     console.error(err)
   }
