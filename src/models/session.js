@@ -16,8 +16,9 @@ const sessionSchema = new Schema({
         meterType: String,
         scrollType: String,
         scrollSpeed: Number
-        // modifiers TODO: after test API
+        // modifiers TODO: after intiial demo is ready
       },
+      sessionDate: { type: Date, required: true },
       record: { // any of the below, all optional:
         score: Number,
         passed: Boolean,
