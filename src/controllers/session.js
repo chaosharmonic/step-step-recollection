@@ -32,17 +32,9 @@ export const getAllSessions = async (req, res, next) => {
 export const getSessionById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const response = await Session.findOne({ _id: id }).lean()
+    const session = await Session.findOne({ _id: id }).lean()
 
-    const { songs } = session
-
-    for (const song of songs) {
-      const id = song.song
-      const { title } = await Song.findOne({ _id: id })
-      song.title = title
-    }
-
-    res.json(response)
+    res.json(session)
   } catch (err) {
     console.error(err)
   }

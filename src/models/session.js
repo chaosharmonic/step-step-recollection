@@ -5,6 +5,7 @@ const { ObjectId } = Schema.Types
 
 const sessionSchema = new Schema({
   player: { type: ObjectId, ref: 'Player' },
+  sessionDate: { type: Date, required: true },
   songs: [
     {
       song: { type: ObjectId, ref: 'Song', required: true },
@@ -18,7 +19,6 @@ const sessionSchema = new Schema({
         scrollSpeed: Number
         // modifiers TODO: after intiial demo is ready
       },
-      sessionDate: { type: Date, required: true },
       record: { // any of the below, all optional:
         score: Number,
         passed: Boolean,
