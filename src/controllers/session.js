@@ -34,6 +34,16 @@ export const getSessionById = async (req, res, next) => {
     const { id } = req.params
     const session = await Session.findOne({ _id: id }).lean()
 
+    const { songs } = session
+
+    for (const song of songs) {
+      const songId = song.song
+      const { charts, title } = await Song.findOne({ _id: songId })
+      console.log(songId)
+      song.charts = charts
+      song.title = title
+    }
+
     res.json(session)
   } catch (err) {
     console.error(err)
@@ -56,9 +66,18 @@ export const updateSession = async (req, res, next) => {
   try {
     const { id } = req.params
     const { payload } = req.body
+
     let updatedSession = await Session.findOneAndUpdate({ _id: id }, { ...payload })
 
-    updatedSession = await Session.findOne({ _id: id })
+    updatedSession = await Session.findOne({ _id: id }).lean()
+    const { songs } = updatedSession
+
+    for (const song of songs) {
+      const songId = song.song
+      const { charts, title } = await Song.findOne({ _id: songId })
+      song.charts = charts
+      song.title = title
+    }
 
     res.json(updatedSession)
   } catch (err) {
