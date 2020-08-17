@@ -6,6 +6,8 @@ const { ObjectId } = Schema.Types
 const songSchema = new Schema({
   title: { type: String, required: true },
   artist: { type: String, required: true },
+  titletranslit: String,
+  artisttranslit: String,
   release: { type: ObjectId, ref: 'Release', required: true }, // first appearance
   length: { type: Number, required: true }, // measured in seconds
   bpm: {
