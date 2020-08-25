@@ -1,5 +1,6 @@
 import Session from '../models/session'
 import Song from '../models/song'
+import Player from '../models/player'
 
 export const getSessionsByPlayer = (req, res, next) => {
   console.log('route: getSessionsByPlayer')
@@ -8,20 +9,26 @@ export const getSessionsByPlayer = (req, res, next) => {
 export const getAllSessions = async (req, res, next) => {
   try {
     // TODO: pagination
-    // const { pageNo, pageSize } = req.query
+    const { pageNo = 1, pageSize = 50 } = req.query
     // const query = { pageNo, pageSize }
     const { filters } = req.body
 
-    const response = await Session.find({ ...filters }).lean()
+    const response = await Session.find({ ...filters })
+      .sort({ sessionDate: -1 })
+      .limit(pageSize)
+      .lean()
 
     for (const session of response) {
       const { songs } = session
+      const { player: playerId } = session
+      const { username } = await Player.findOne({ _id: playerId })
 
       for (const song of songs) {
-        const id = song.song
-        const { title } = await Song.findOne({ _id: id })
+        const songId = song.song
+        const { title } = await Song.findOne({ _id: songId })
         song.title = title
       }
+      session.player = { id: playerId, username }
     }
     res.json(response)
   } catch (err) {
@@ -34,12 +41,14 @@ export const getSessionById = async (req, res, next) => {
     const { id } = req.params
     const session = await Session.findOne({ _id: id }).lean()
 
-    const { songs } = session
+    const { songs, player: playerId } = session
+
+    const { username } = await Player.findOne({ _id: playerId })
+    session.player = { id: playerId, username }
 
     for (const song of songs) {
       const songId = song.song
       const { charts, title } = await Song.findOne({ _id: songId })
-      console.log(songId)
       song.charts = charts
       song.title = title
     }
