@@ -2,13 +2,19 @@ import Song from '../models/song'
 
 export const getAllSongs = async (req, res, next) => {
   try {
-    // TODO: pagination
-    // const { pageNo, pageSize } = req.query
-    // const { filters } = req.body
+    const { pageNo = 1, pageSize = 50 } = req.query
+    const { filters = {} } = req.body
 
-    const songs = await Song.find()
+    const allMatchingSongs = await Song.find(filters)
 
-    res.json(songs)
+    const pageCount = Math.ceil(allMatchingSongs.length / pageSize)
+
+    const songs = await Song.find(filters)
+      .sort({ title: 1, titletranslit: 1 })
+      .limit(pageSize)
+      .skip(pageSize * (pageNo - 1))
+
+    res.json({ docs: songs, pageCount })
   } catch (err) {
     console.error(err)
   }

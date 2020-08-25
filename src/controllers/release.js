@@ -1,14 +1,18 @@
 import Release from '../models/release'
 import Song from '../models/song'
 
+// TODO: search route
+
 export const getAllReleases = async (req, res, next) => {
   try {
     // TODO: pagination
-    // const { pageNo, pageSize } = req.query
+    const { pageNo = 1, pageSize = 30 } = req.query
     // const query = { pageNo, pageSize }
     const { filters } = req.body
 
     const releases = await Release.find({ ...filters })
+      .sort({ releaseDate: 1 })
+      .limit(pageSize)
 
     res.json(releases)
   } catch (err) {
