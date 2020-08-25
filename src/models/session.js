@@ -4,7 +4,7 @@ import songEnum from '../enums/song'
 const { ObjectId } = Schema.Types
 
 const sessionSchema = new Schema({
-  player: { type: ObjectId, ref: 'Player' },
+  player: { type: ObjectId, ref: 'Player', required: true },
   sessionDate: { type: Date, required: true },
   songs: [
     {
