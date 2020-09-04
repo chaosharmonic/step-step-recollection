@@ -68,9 +68,12 @@ export const addSession = async (req, res, next) => {
     const playerId = newSession.player
     const { username } = await Player.findOne({ _id: playerId })
 
-    newSession.player = { username, id: playerId }
+    const sessionResponse = {
+      ...newSession._doc,
+      player: { username, id: playerId }
+    }
 
-    res.json(newSession)
+    res.json(sessionResponse)
   } catch (err) {
     console.error(err)
   }
@@ -110,11 +113,7 @@ export const deleteSession = async (req, res, next) => {
     const { _id: playerId, isAdmin } = req.user
     const session = await Session.findOne({ _id: sessionId })
 
-    console.log(session.player)
-    console.log(playerId)
-
     const canDelete = String(session.player) === String(playerId) || isAdmin
-    console.log(canDelete)
 
     if (!canDelete) throw new Error('Invalid permissions!')
 
