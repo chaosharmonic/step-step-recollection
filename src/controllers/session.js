@@ -65,6 +65,11 @@ export const addSession = async (req, res, next) => {
 
     const newSession = await Session.create({ ...payload })
 
+    const playerId = newSession.player
+    const { username } = await Player.findOne({ _id: playerId })
+
+    newSession.player = { username, id: playerId }
+
     res.json(newSession)
   } catch (err) {
     console.error(err)
@@ -74,7 +79,12 @@ export const addSession = async (req, res, next) => {
 export const updateSession = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { payload } = req.body
+    const { _id: player, isAdmin } = req.user
+    const session = await Session.findOne({ _id: id })
+
+    const canUpdate = session.player === player || isAdmin
+
+    if (!canUpdate) return res.status(401).send('Invalid permissions!')
 
     let updatedSession = await Session.findOneAndUpdate({ _id: id }, { ...payload })
 
@@ -96,13 +106,24 @@ export const updateSession = async (req, res, next) => {
 
 export const deleteSession = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const isDeleted = await Session.deleteOne({ _id: id })
+    const { id: sessionId } = req.params
+    const { _id: playerId, isAdmin } = req.user
+    const session = await Session.findOne({ _id: sessionId })
+
+    console.log(session.player)
+    console.log(playerId)
+
+    const canDelete = String(session.player) === String(playerId) || isAdmin
+    console.log(canDelete)
+
+    if (!canDelete) throw new Error('Invalid permissions!')
+
+    const isDeleted = await Session.deleteOne({ _id: sessionId })
 
     if (!isDeleted) throw new Error('Could not delete this id!')
 
     res.json({
-      _id: id
+      _id: sessionId
     })
   } catch (err) {
     console.error(err)

@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 
+import authRouter from './routes/auth'
 import songRouter from './routes/song'
 import releaseRouter from './routes/release'
 import sessionRouter from './routes/session'
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use('/api/auth', authRouter)
 app.use('/api/song', songRouter)
 app.use('/api/release', releaseRouter)
 app.use('/api/session', sessionRouter)
@@ -21,9 +23,8 @@ app.use('/api/player', playerRouter)
 
 const expressPort = process.env.EXPRESS_PORT
 const mongoURL = process.env.MONGODB_URL
-const mongoPort = process.env.MONGODB_PORT
 
-mongoose.connect(`${mongoURL}:${mongoPort}`, {
+mongoose.connect(mongoURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false
