@@ -21,7 +21,7 @@ app.use('/api/release', releaseRouter)
 app.use('/api/session', sessionRouter)
 app.use('/api/player', playerRouter)
 
-const expressPort = process.env.EXPRESS_PORT
+const expressPort = process.env.PORT || process.env.EXPRESS_PORT || 3000
 const mongoURL = process.env.MONGODB_URL
 
 mongoose.connect(mongoURL, {
