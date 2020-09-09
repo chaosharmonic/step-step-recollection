@@ -10,6 +10,7 @@ export const getAllSongs = async (req, res, next) => {
     const pageCount = Math.ceil(allMatchingSongs.length / pageSize)
 
     const songs = await Song.find(filters)
+      .populate({ path: 'release' })
       .sort({ title: 1, titletranslit: 1 })
       .limit(pageSize)
       .skip(pageSize * (pageNo - 1))
@@ -24,6 +25,7 @@ export const getSongById = async (req, res, next) => {
   try {
     const { id } = req.params
     const song = await Song.findOne({ _id: id })
+      .populate({ path: 'release' })
 
     res.json(song)
   } catch (err) {
