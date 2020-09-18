@@ -9,13 +9,13 @@ export const getSessionsByPlayer = (req, res, next) => {
 export const getAllSessions = async (req, res, next) => {
   try {
     // TODO: pagination
-    const { pageNo = 1, pageSize = 50 } = req.query
+    // const { pageNo = 1, pageSize = 50 } = req.query
     // const query = { pageNo, pageSize }
     const { filters } = req.body
 
     const response = await Session.find({ ...filters })
       .sort({ sessionDate: -1 })
-      .limit(pageSize)
+      // .limit(pageSize)
       .lean()
 
     for (const session of response) {
@@ -82,17 +82,20 @@ export const addSession = async (req, res, next) => {
 export const updateSession = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { _id: player, isAdmin } = req.user
+    const { _id: playerId, isAdmin } = req.user
+    const { payload } = req.body
     const session = await Session.findOne({ _id: id })
 
-    const canUpdate = session.player === player || isAdmin
-
-    if (!canUpdate) return res.status(401).send('Invalid permissions!')
+    const canUpdate = String(session.player) === String(playerId) || isAdmin
+    if (!canUpdate) throw new Error('Invalid permissions!')
 
     let updatedSession = await Session.findOneAndUpdate({ _id: id }, { ...payload })
 
     updatedSession = await Session.findOne({ _id: id }).lean()
     const { songs } = updatedSession
+
+    const { username } = await Player.findOne({ _id: playerId })
+    session.player = { id: playerId, username }
 
     for (const song of songs) {
       const songId = song.song
@@ -104,6 +107,7 @@ export const updateSession = async (req, res, next) => {
     res.json(updatedSession)
   } catch (err) {
     console.error(err)
+    res.status(401).json({ message: err })
   }
 }
 
@@ -126,5 +130,6 @@ export const deleteSession = async (req, res, next) => {
     })
   } catch (err) {
     console.error(err)
+    res.status(401).json({ message: err })
   }
 }
