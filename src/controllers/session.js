@@ -8,15 +8,14 @@ export const getSessionsByPlayer = (req, res, next) => {
 
 export const getAllSessions = async (req, res, next) => {
   try {
-    // TODO: pagination
-    // const { pageNo = 1, pageSize = 50 } = req.query
-    // const query = { pageNo, pageSize }
+    const { pageNo = 1, pageSize = 50 } = req.query
     const { filters } = req.body
 
     const response = await Session.find({ ...filters })
       .sort({ sessionDate: -1 })
-      // .limit(pageSize)
+      .limit(pageSize)
       .lean()
+      .skip(pageSize * (pageNo - 1))
 
     for (const session of response) {
       const { songs } = session
