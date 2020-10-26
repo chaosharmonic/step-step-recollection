@@ -2,7 +2,7 @@ import Song from '../models/song'
 
 export const getAllSongs = async (req, res, next) => {
   try {
-    const { pageNo = 1, pageSize = 50 } = req.query
+    const { pageNo = 1, pageSize = 20 } = req.query
     const { filters = {} } = req.body
 
     const allMatchingSongs = await Song.find(filters)
