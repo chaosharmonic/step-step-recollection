@@ -11,11 +11,11 @@ export const getAllSongs = async (req, res, next) => {
 
     const songs = await Song.find(filters)
       .populate({ path: 'release' })
-      .sort({ title: 1, titletranslit: 1 })
+      .sort({ titlesort: 1 })
       .limit(pageSize)
       .skip(pageSize * (pageNo - 1))
 
-    res.json({ docs: songs, pageCount })
+    res.json({ docs: songs, pageNo, pageCount })
   } catch (err) {
     console.error(err)
   }
@@ -44,7 +44,17 @@ export const addSong = async (req, res, next) => {
       return null
     }
 
-    const newSong = await Song.create({ ...payload })
+    const { title, titletranslit, artist, artisttranslit } = payload
+
+    const titlesort = titletranslit
+      ? titletranslit.toLowerCase()
+      : title.toLowerCase()
+
+    const artistsort = artisttranslit
+      ? artisttranslit.toLowerCase()
+      : artist.toLowerCase()
+
+    const newSong = await Song.create({ ...payload, titlesort, artistsort })
 
     res.json(newSong)
   } catch (err) {

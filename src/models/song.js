@@ -8,6 +8,8 @@ const songSchema = new Schema({
   artist: { type: String, required: true },
   titletranslit: String,
   artisttranslit: String,
+  titlesort: String,
+  artistsort: String,
   release: { type: ObjectId, ref: 'Release', required: true }, // first appearance
   length: { type: Number, required: true }, // measured in seconds
   bpm: {
