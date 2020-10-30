@@ -94,7 +94,7 @@ export const updateSession = async (req, res, next) => {
     const { songs } = updatedSession
 
     const { username } = await Player.findOne({ _id: playerId })
-    session.player = { id: playerId, username }
+    updatedSession.player = { id: playerId, username }
 
     for (const song of songs) {
       const songId = song.song
