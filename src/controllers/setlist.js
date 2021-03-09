@@ -1,25 +1,25 @@
-import Session from '../models/session'
+import Setlist from '../models/setlist'
 import Song from '../models/song'
 import Player from '../models/player'
 
-export const getSessionsByPlayer = (req, res, next) => {
-  console.log('route: getSessionsByPlayer')
+export const getSetlistsByPlayer = (req, res, next) => {
+  console.log('route: getSetlistsByPlayer')
 }
 
-export const getAllSessions = async (req, res, next) => {
+export const getAllSetlists = async (req, res, next) => {
   try {
     const { pageNo = 1, pageSize = 50 } = req.query
     const { filters } = req.body
 
-    const response = await Session.find({ ...filters })
-      .sort({ sessionDate: -1 })
+    const response = await Setlist.find({ ...filters })
+      .sort({ setlistDate: -1 })
       .limit(pageSize)
       .lean()
       .skip(pageSize * (pageNo - 1))
 
-    for (const session of response) {
-      const { songs } = session
-      const { player: playerId } = session
+    for (const setlist of response) {
+      const { songs } = setlist
+      const { player: playerId } = setlist
       const { username } = await Player.findOne({ _id: playerId })
 
       for (const song of songs) {
@@ -27,7 +27,7 @@ export const getAllSessions = async (req, res, next) => {
         const { title } = await Song.findOne({ _id: songId })
         song.title = title
       }
-      session.player = { id: playerId, username }
+      setlist.player = { id: playerId, username }
     }
     res.json(response)
   } catch (err) {
@@ -35,15 +35,15 @@ export const getAllSessions = async (req, res, next) => {
   }
 }
 
-export const getSessionById = async (req, res, next) => {
+export const getSetlistById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const session = await Session.findOne({ _id: id }).lean()
+    const setlist = await Setlist.findOne({ _id: id }).lean()
 
-    const { songs, player: playerId } = session
+    const { songs, player: playerId } = setlist
 
     const { username } = await Player.findOne({ _id: playerId })
-    session.player = { id: playerId, username }
+    setlist.player = { id: playerId, username }
 
     for (const song of songs) {
       const songId = song.song
@@ -52,49 +52,49 @@ export const getSessionById = async (req, res, next) => {
       song.title = title
     }
 
-    res.json(session)
+    res.json(setlist)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const addSession = async (req, res, next) => {
+export const addSetlist = async (req, res, next) => {
   try {
     const { payload } = req.body
 
-    const newSession = await Session.create({ ...payload })
+    const newSetlist = await Setlist.create({ ...payload })
 
-    const playerId = newSession.player
+    const playerId = newSetlist.player
     const { username } = await Player.findOne({ _id: playerId })
 
-    const sessionResponse = {
-      ...newSession._doc,
+    const setlistResponse = {
+      ...newSetlist._doc,
       player: { username, id: playerId }
     }
 
-    res.json(sessionResponse)
+    res.json(setlistResponse)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const updateSession = async (req, res, next) => {
+export const updateSetlist = async (req, res, next) => {
   try {
     const { id } = req.params
     const { _id: playerId, isAdmin } = req.user
     const { payload } = req.body
-    const session = await Session.findOne({ _id: id })
+    const setlist = await Setlist.findOne({ _id: id })
 
-    const canUpdate = String(session.player) === String(playerId) || isAdmin
+    const canUpdate = String(setlist.player) === String(playerId) || isAdmin
     if (!canUpdate) throw new Error('Invalid permissions!')
 
-    let updatedSession = await Session.findOneAndUpdate({ _id: id }, { ...payload })
+    let updatedSetlist = await Setlist.findOneAndUpdate({ _id: id }, { ...payload })
 
-    updatedSession = await Session.findOne({ _id: id }).lean()
-    const { songs } = updatedSession
+    updatedSetlist = await Setlist.findOne({ _id: id }).lean()
+    const { songs } = updatedSetlist
 
     const { username } = await Player.findOne({ _id: playerId })
-    updatedSession.player = { id: playerId, username }
+    updatedSetlist.player = { id: playerId, username }
 
     for (const song of songs) {
       const songId = song.song
@@ -103,29 +103,29 @@ export const updateSession = async (req, res, next) => {
       song.title = title
     }
 
-    res.json(updatedSession)
+    res.json(updatedSetlist)
   } catch (err) {
     console.error(err)
     res.status(401).json({ message: err })
   }
 }
 
-export const deleteSession = async (req, res, next) => {
+export const deleteSetlist = async (req, res, next) => {
   try {
-    const { id: sessionId } = req.params
+    const { id: setlistId } = req.params
     const { _id: playerId, isAdmin } = req.user
-    const session = await Session.findOne({ _id: sessionId })
+    const setlist = await Setlist.findOne({ _id: setlistId })
 
-    const canDelete = String(session.player) === String(playerId) || isAdmin
+    const canDelete = String(setlist.player) === String(playerId) || isAdmin
 
     if (!canDelete) throw new Error('Invalid permissions!')
 
-    const isDeleted = await Session.deleteOne({ _id: sessionId })
+    const isDeleted = await Setlist.deleteOne({ _id: setlistId })
 
     if (!isDeleted) throw new Error('Could not delete this id!')
 
     res.json({
-      _id: sessionId
+      _id: setlistId
     })
   } catch (err) {
     console.error(err)

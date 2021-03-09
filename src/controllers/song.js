@@ -10,7 +10,7 @@ export const getAllSongs = async (req, res, next) => {
     const pageCount = Math.ceil(allMatchingSongs.length / pageSize)
 
     const songs = await Song.find(filters)
-      .populate({ path: 'release' })
+      .populate({ path: 'album' })
       .sort({ titlesort: 1 })
       .limit(pageSize)
       .skip(pageSize * (pageNo - 1))
@@ -25,7 +25,7 @@ export const getSongById = async (req, res, next) => {
   try {
     const { id } = req.params
     const song = await Song.findOne({ _id: id })
-      .populate({ path: 'release' })
+      .populate({ path: 'album' })
 
     res.json(song)
   } catch (err) {
@@ -37,7 +37,7 @@ export const addSong = async (req, res, next) => {
   try {
     const { payload } = req.body
     console.log(payload)
-    const existing = await Song.findOne({ title: payload.title, release: payload.release })
+    const existing = await Song.findOne({ title: payload.title, album: payload.album })
     if (existing) {
       const message = 'Song already exists!'
       res.json(message)

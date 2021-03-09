@@ -1,14 +1,14 @@
 import { Router } from 'express'
 import { validateToken } from '../middleware/auth.js'
-import * as sessionController from '../controllers/session.js'
+import * as setlistController from '../controllers/setlist.js'
 
-const sessionRouter = Router()
+const setlistRouter = Router()
 
-sessionRouter.get('/', (req, res, next) => sessionController.getAllSessions(req, res, next))
-sessionRouter.get('/entry/:id', (req, res, next) => sessionController.getSessionById(req, res, next))
-sessionRouter.get('/player/:id', (req, res, next) => sessionController.getSessionsByPlayer(req, res, next))
-sessionRouter.post('/add', validateToken, (req, res, next) => sessionController.addSession(req, res, next))
-sessionRouter.put('/update/:id', validateToken, (req, res, next) => sessionController.updateSession(req, res, next))
-sessionRouter.delete('/delete/:id', validateToken, (req, res, next) => sessionController.deleteSession(req, res, next))
+setlistRouter.get('/', (req, res, next) => setlistController.getAllSetlists(req, res, next))
+setlistRouter.get('/entry/:id', (req, res, next) => setlistController.getSetlistById(req, res, next))
+setlistRouter.get('/player/:id', (req, res, next) => setlistController.getSetlistsByPlayer(req, res, next))
+setlistRouter.post('/add', validateToken, (req, res, next) => setlistController.addSetlist(req, res, next))
+setlistRouter.put('/update/:id', validateToken, (req, res, next) => setlistController.updateSetlist(req, res, next))
+setlistRouter.delete('/delete/:id', validateToken, (req, res, next) => setlistController.deleteSetlist(req, res, next))
 
-export default sessionRouter
+export default setlistRouter

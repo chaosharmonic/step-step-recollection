@@ -5,8 +5,8 @@ import mongoose from 'mongoose'
 
 import authRouter from './routes/auth'
 import songRouter from './routes/song'
-import releaseRouter from './routes/release'
-import sessionRouter from './routes/session'
+import albumRouter from './routes/album'
+import setlistRouter from './routes/setlist'
 import playerRouter from './routes/player'
 
 const app = express()
@@ -17,8 +17,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/auth', authRouter)
 app.use('/api/song', songRouter)
-app.use('/api/release', releaseRouter)
-app.use('/api/session', sessionRouter)
+app.use('/api/album', albumRouter)
+app.use('/api/setlist', setlistRouter)
 app.use('/api/player', playerRouter)
 
 const expressPort = process.env.PORT || process.env.EXPRESS_PORT || 3000

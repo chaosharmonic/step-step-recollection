@@ -8,7 +8,7 @@ const noteSchema = new Schema({
   difficulty: { type: String, enum: songEnum.difficulty },
   numPads: Number,
   numPanels: Number,
-  session: { type: ObjectId, ref: 'Session' }, // optional
+  setlist: { type: ObjectId, ref: 'Setlist' }, // optional
   content: String
 })
 

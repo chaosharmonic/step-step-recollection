@@ -3,9 +3,9 @@ import songEnum from '../enums/song'
 
 const { ObjectId } = Schema.Types
 
-const sessionSchema = new Schema({
+const setlistSchema = new Schema({
   player: { type: ObjectId, ref: 'Player', required: true },
-  sessionDate: { type: Date, required: true },
+  setlistDate: { type: Date, required: true },
   songs: [
     {
       song: { type: ObjectId, ref: 'Song', required: true },
@@ -40,6 +40,6 @@ const sessionSchema = new Schema({
   ]
 })
 
-const Session = model('Session', sessionSchema)
+const Setlist = model('Setlist', setlistSchema)
 
-export default Session
+export default Setlist

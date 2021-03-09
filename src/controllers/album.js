@@ -1,75 +1,75 @@
-import Release from '../models/release'
+import Album from '../models/album'
 import Song from '../models/song'
 
 // TODO: search route
 
-export const getAllReleases = async (req, res, next) => {
+export const getAllAlbums = async (req, res, next) => {
   try {
     // TODO: pagination
     const { pageNo = 1, pageSize = 30 } = req.query
     // const query = { pageNo, pageSize }
     const { filters } = req.body
 
-    const releases = await Release.find({ ...filters })
+    const albums = await Album.find({ ...filters })
       .sort({ releaseDate: 1 })
       .limit(pageSize)
 
-    res.json(releases)
+    res.json(albums)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const getReleaseById = async (req, res, next) => {
+export const getAlbumById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const release = await Release.findOne({ _id: id })
+    const album = await Album.findOne({ _id: id })
 
-    const songs = await Song.find({ release: { _id: id } })
+    const songs = await Song.find({ album: { _id: id } })
 
-    const response = { release, songs }
+    const response = { album, songs }
     res.json(response)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const addRelease = async (req, res, next) => {
+export const addAlbum = async (req, res, next) => {
   try {
     const { payload } = req.body
-    const existing = await Release.findOne({ title: payload.title })
+    const existing = await Album.findOne({ title: payload.title })
     if (existing) {
-      const message = 'Release already exists!'
+      const message = 'Album already exists!'
       res.json(message)
       return null
     }
 
-    const newRelease = await Release.create({ ...payload })
+    const newAlbum = await Album.create({ ...payload })
 
-    res.json(newRelease)
+    res.json(newAlbum)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const updateRelease = async (req, res, next) => {
+export const updateAlbum = async (req, res, next) => {
   try {
     const { id } = req.params
     const { payload } = req.body
-    let updatedRelease = await Release.findOneAndUpdate({ _id: id }, { ...payload })
+    let updatedAlbum = await Album.findOneAndUpdate({ _id: id }, { ...payload })
 
-    updatedRelease = await Release.findOne({ _id: id })
+    updatedAlbum = await Album.findOne({ _id: id })
 
-    res.json(updatedRelease)
+    res.json(updatedAlbum)
   } catch (err) {
     console.error(err)
   }
 }
 
-export const deleteRelease = async (req, res, next) => {
+export const deleteAlbum = async (req, res, next) => {
   try {
     const { id } = req.params
-    const isDeleted = await Release.deleteOne({ _id: id })
+    const isDeleted = await Album.deleteOne({ _id: id })
 
     if (!isDeleted) throw new Error('Could not delete this id!')
 

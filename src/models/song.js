@@ -10,7 +10,7 @@ const songSchema = new Schema({
   artisttranslit: String,
   titlesort: String,
   artistsort: String,
-  release: { type: ObjectId, ref: 'Release', required: true }, // first appearance
+  album: { type: ObjectId, ref: 'Album', required: true }, // first appearance
   length: { type: Number, required: true }, // measured in seconds
   bpm: {
     display: String,
@@ -33,14 +33,14 @@ const songSchema = new Schema({
       numPads: { type: Number, required: true }, // single, double, etc.
       numPanels: Number, // optional
       // alternate pad schemes (Solo mode, etc)
-      // overrides Release defaults
+      // overrides Album defaults
       difficulty: { type: String, enum: songEnum.difficulty, required: true },
       level: { type: Number, required: true },
       // stats (notecounts, jumps, etc). TODO: after initial test build
       alternateScale: { // optional
         // alternate scaling for difficulty ratings
         // (X-scaling for older songs, for instance)
-        // overrides Release defaults
+        // overrides Album defaults
         scale: String,
         level: Number
       }
