@@ -23,5 +23,8 @@
   "scripts": {
     "start": "babel-node src/server.js",
     "dev": "nodemon --exec babel-node src/server.js"
+  },
+  "engines": {
+    "node": "v14.8.0"
   }
 }
