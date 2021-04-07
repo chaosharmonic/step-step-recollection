@@ -5,9 +5,9 @@ export const getAllSongs = async (req, res, next) => {
     const { pageNo = 1, pageSize = 20 } = req.query
     const { filters = {} } = req.body
 
-    const allMatchingSongs = await Song.find(filters)
+    const totalCount = await Song.countDocuments(filters)
 
-    const pageCount = Math.ceil(allMatchingSongs.length / pageSize)
+    const pageCount = Math.ceil(totalCount / pageSize)
 
     const songs = await Song.find(filters)
       .populate({ path: 'album' })
