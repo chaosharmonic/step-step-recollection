@@ -33,6 +33,28 @@ export const getSongById = async (req, res, next) => {
   }
 }
 
+export const getSongsByTitle = async (req, res) => {
+  try {
+    const { title } = req.query
+
+    const searchTerms = new RegExp(title, 'i')
+
+    const results = await Song.find({
+      $or: [
+        { title: { $regex: searchTerms } },
+        { titlesort: { $regex: searchTerms } }
+      ]
+    })
+      .sort({ titlesort: 1 })
+      .limit(10)
+      .populate({ path: 'album' })
+
+    res.json({ docs: results })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export const addSong = async (req, res, next) => {
   try {
     const { payload } = req.body
