@@ -14,14 +14,15 @@ const setlistSchema = new Schema({
         // overrides Player defaults
         judge: Number,
         life: Number,
-        meterType: String,
+        meterType: String, // TODO: add enums
         scrollType: String,
         scrollSpeed: Number
-        // modifiers TODO: after intiial demo is ready
+        // TODO: modifiers
       },
-      record: { // any of the below, all optional:
-        score: Number,
+      record: { // any of the below -- all optional, but must include at least one:
         passed: Boolean,
+        score: Number,
+        percent: Number,
         grade: String, // AAA, AA, etc
         judgments: {
           marvelous: Number,
